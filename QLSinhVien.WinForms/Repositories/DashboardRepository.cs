@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using QLSinhVien.WinForms.Models;
 using System.Linq;
@@ -69,7 +69,90 @@ namespace QLSinhVien.WinForms.Repositories
             return await _collection.Aggregate<LanguageStatDto>(pipeline).ToListAsync();
         }
 
-        // 3. Top 5 Sinh viên điểm TB cao nhất
+        // 3. Phân loại học lực (Xuất sắc / Giỏi / Khá / TB-Yếu)
+        public async Task<Dictionary<string, int>> GetAcademicRankStatsAsync()
+        {
+            var pipeline = new BsonDocument[]
+            {
+                new BsonDocument("$project", new BsonDocument
+                {
+                    { "diemTB", new BsonDocument("$avg", "$monhoc.diem") }
+                }),
+                new BsonDocument("$project", new BsonDocument
+                {
+                    { "xepLoai", new BsonDocument("$switch", new BsonDocument
+                        {
+                            { "branches", new BsonArray
+                                {
+                                    new BsonDocument { { "case", new BsonDocument("$gte", new BsonArray { "$diemTB", 8.5 }) }, { "then", "Xuất sắc" } },
+                                    new BsonDocument { { "case", new BsonDocument("$gte", new BsonArray { "$diemTB", 7.0 }) }, { "then", "Giỏi" } },
+                                    new BsonDocument { { "case", new BsonDocument("$gte", new BsonArray { "$diemTB", 5.5 }) }, { "then", "Khá" } }
+                                }
+                            },
+                            { "default", "TB/Yếu" }
+                        })
+                    }
+                }),
+                new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", "$xepLoai" },
+                    { "count", new BsonDocument("$sum", 1) }
+                })
+            };
+
+            var docs = await _collection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+            var result = new Dictionary<string, int>
+            {
+                ["Xuất sắc"] = 0,
+                ["Giỏi"] = 0,
+                ["Khá"] = 0,
+                ["TB/Yếu"] = 0
+            };
+            foreach (var doc in docs)
+            {
+                string key = doc["_id"].AsString;
+                if (result.ContainsKey(key))
+                    result[key] = doc["count"].AsInt32;
+            }
+            return result;
+        }
+
+        // 4. Thống kê theo lớp: số SV, ĐTB max, ĐTB min
+        public async Task<List<ClassStatDto>> GetClassStatsAsync()
+        {
+            var pipeline = new BsonDocument[]
+            {
+                new BsonDocument("$project", new BsonDocument
+                {
+                    { "malop", "$malop" },
+                    { "diemTB", new BsonDocument("$avg", "$monhoc.diem") }
+                }),
+                new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", "$malop" },
+                    { "TotalStudents", new BsonDocument("$sum", 1) },
+                    { "MaxAvgScore", new BsonDocument("$max", "$diemTB") },
+                    { "MinAvgScore", new BsonDocument("$min", "$diemTB") }
+                }),
+                new BsonDocument("$sort", new BsonDocument("_id", 1))
+            };
+
+            var docs = await _collection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+            var list = new List<ClassStatDto>();
+            foreach (var doc in docs)
+            {
+                list.Add(new ClassStatDto
+                {
+                    MaLop = doc["_id"].AsString,
+                    TotalStudents = doc["TotalStudents"].AsInt32,
+                    MaxAvgScore = Math.Round(doc["MaxAvgScore"].AsDouble, 2),
+                    MinAvgScore = Math.Round(doc["MinAvgScore"].AsDouble, 2)
+                });
+            }
+            return list;
+        }
+
+        // 5. Top 5 Sinh viên điểm TB cao nhất
         public async Task<List<StudentRankDto>> GetTop5StudentsAsync()
         {
             var pipeline = new BsonDocument[]

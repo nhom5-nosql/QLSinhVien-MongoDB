@@ -51,14 +51,12 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             SideMenuPanel = new Guna.UI2.WinForms.Guna2Panel();
             guna2Button3 = new Guna.UI2.WinForms.Guna2Button();
             btnHome = new Guna.UI2.WinForms.Guna2Button();
@@ -79,8 +77,6 @@
             lblTyLeNamNu = new Label();
             label3 = new Label();
             guna2Panel6 = new Guna.UI2.WinForms.Guna2Panel();
-            guna2CircleProgressBar2 = new Guna.UI2.WinForms.Guna2CircleProgressBar();
-            guna2CircleProgressBar1 = new Guna.UI2.WinForms.Guna2CircleProgressBar();
             label4 = new Label();
             guna2Panel7 = new Guna.UI2.WinForms.Guna2Panel();
             dgv_Top5SV = new DataGridView();
@@ -350,44 +346,14 @@
             // 
             guna2Panel6.BackColor = Color.Transparent;
             guna2Panel6.BorderRadius = 15;
-            guna2Panel6.Controls.Add(guna2CircleProgressBar2);
-            guna2Panel6.Controls.Add(guna2CircleProgressBar1);
             guna2Panel6.Controls.Add(label4);
-            guna2Panel6.CustomizableEdges = customizableEdges25;
+            guna2Panel6.CustomizableEdges = customizableEdges23;
             guna2Panel6.FillColor = Color.White;
             guna2Panel6.Location = new Point(78, 197);
             guna2Panel6.Name = "guna2Panel6";
-            guna2Panel6.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            guna2Panel6.ShadowDecoration.CustomizableEdges = customizableEdges24;
             guna2Panel6.Size = new Size(302, 244);
             guna2Panel6.TabIndex = 5;
-            // 
-            // guna2CircleProgressBar2
-            // 
-            guna2CircleProgressBar2.FillColor = Color.FromArgb(200, 213, 218, 223);
-            guna2CircleProgressBar2.Font = new Font("Segoe UI", 12F);
-            guna2CircleProgressBar2.ForeColor = Color.White;
-            guna2CircleProgressBar2.Location = new Point(266, 141);
-            guna2CircleProgressBar2.Minimum = 0;
-            guna2CircleProgressBar2.Name = "guna2CircleProgressBar2";
-            guna2CircleProgressBar2.ShadowDecoration.CustomizableEdges = customizableEdges23;
-            guna2CircleProgressBar2.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            guna2CircleProgressBar2.Size = new Size(8, 8);
-            guna2CircleProgressBar2.TabIndex = 3;
-            guna2CircleProgressBar2.Text = "guna2CircleProgressBar2";
-            // 
-            // guna2CircleProgressBar1
-            // 
-            guna2CircleProgressBar1.FillColor = Color.FromArgb(200, 213, 218, 223);
-            guna2CircleProgressBar1.Font = new Font("Segoe UI", 12F);
-            guna2CircleProgressBar1.ForeColor = Color.White;
-            guna2CircleProgressBar1.Location = new Point(65, 76);
-            guna2CircleProgressBar1.Minimum = 0;
-            guna2CircleProgressBar1.Name = "guna2CircleProgressBar1";
-            guna2CircleProgressBar1.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            guna2CircleProgressBar1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            guna2CircleProgressBar1.Size = new Size(150, 150);
-            guna2CircleProgressBar1.TabIndex = 2;
-            guna2CircleProgressBar1.Text = "guna2CircleProgressBar1";
             // 
             // label4
             // 
@@ -405,11 +371,11 @@
             guna2Panel7.BorderRadius = 15;
             guna2Panel7.Controls.Add(dgv_Top5SV);
             guna2Panel7.Controls.Add(label5);
-            guna2Panel7.CustomizableEdges = customizableEdges27;
+            guna2Panel7.CustomizableEdges = customizableEdges25;
             guna2Panel7.FillColor = Color.White;
             guna2Panel7.Location = new Point(401, 197);
             guna2Panel7.Name = "guna2Panel7";
-            guna2Panel7.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            guna2Panel7.ShadowDecoration.CustomizableEdges = customizableEdges26;
             guna2Panel7.Size = new Size(523, 244);
             guna2Panel7.TabIndex = 6;
             // 
@@ -435,11 +401,11 @@
             // 
             guna2Panel8.BackColor = Color.Transparent;
             guna2Panel8.BorderRadius = 15;
-            guna2Panel8.CustomizableEdges = customizableEdges29;
+            guna2Panel8.CustomizableEdges = customizableEdges27;
             guna2Panel8.FillColor = Color.White;
             guna2Panel8.Location = new Point(78, 462);
             guna2Panel8.Name = "guna2Panel8";
-            guna2Panel8.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            guna2Panel8.ShadowDecoration.CustomizableEdges = customizableEdges28;
             guna2Panel8.Size = new Size(846, 115);
             guna2Panel8.TabIndex = 7;
             // 
@@ -501,8 +467,6 @@
         private Label label4;
         private Label label5;
         private DataGridView dgv_Top5SV;
-        private Guna.UI2.WinForms.Guna2CircleProgressBar guna2CircleProgressBar2;
-        private Guna.UI2.WinForms.Guna2CircleProgressBar guna2CircleProgressBar1;
         private Label lblTongSinhVien;
         private Label lblTongSoLop;
         private Label lblDiemTrungBinh;
