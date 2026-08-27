@@ -30,7 +30,7 @@ namespace QLSinhVien.WinForms
             {
                 MessageBox.Show("Lỗi kết nối: \n" + ex.Message, "Loi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            Application.Run(new Form1());
+            Application.Run(new FormMain());
         }
     }
 }
