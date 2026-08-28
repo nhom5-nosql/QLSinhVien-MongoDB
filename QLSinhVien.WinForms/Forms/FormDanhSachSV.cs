@@ -114,7 +114,7 @@ namespace QLSinhVien.WinForms.Forms
             // Màu xếp loại
             _dgv.CellFormatting += (_, e) =>
             {
-                if (_dgv.Columns[e.ColumnIndex].Name == "colXepLoai" && e.Value != null)
+                if (e.CellStyle != null && _dgv.Columns[e.ColumnIndex]?.Name == "colXepLoai" && e.Value != null)
                 {
                     e.CellStyle.Font     = new Font("Segoe UI", 8.5f, FontStyle.Bold);
                     e.CellStyle.ForeColor= e.Value.ToString() switch

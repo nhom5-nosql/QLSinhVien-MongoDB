@@ -49,15 +49,30 @@ namespace QLSinhVien.WinForms.Forms
             txtTimSV.PlaceholderText = "Nhập mã SV hoặc họ tên (Nhấn Enter để tìm)...";
             txtTimSV.KeyDown += TxtTimSV_KeyDown;
 
-            // Nút Sinh viên (mũ tốt nghiệp) trên sidebar
-            guna2Button1.Click += BtnStudents_Click;
+            // Nút Quản lý Sinh viên (CRUD) trên sidebar
+            guna2Button1.Click += BtnCrud_Click;
+
+            // Nút Danh sách Sinh viên trên sidebar
+            guna2Button2.Click += BtnDanhSach_Click;
+
+            // Nút Thoát trên sidebar
+            guna2Button3.Click += BtnExit_Click;
 
             // Nút Home trên sidebar (tải lại dữ liệu dashboard)
             btnHome.Click += async (_, _) => await RefreshDashboardAsync();
         }
 
-        // ─── NÚT SINH VIÊN TRÊN SIDEBAR ──────────────────────────────────────────
-        private async void BtnStudents_Click(object? sender, EventArgs e)
+        // ─── NÚT CRUD SINH VIÊN (guna2Button1) ────────────────────────────────────
+        private async void BtnCrud_Click(object? sender, EventArgs e)
+        {
+            using var frmCrud = new FormMain(_svRepo);
+            frmCrud.ShowDialog(this);
+            // Sau khi thao tác CRUD (Thêm/Sửa/Xóa), tự động làm mới số liệu trên Dashboard
+            await RefreshDashboardAsync();
+        }
+
+        // ─── NÚT XEM TOÀN BỘ DANH SÁCH (guna2Button2) ────────────────────────────
+        private async void BtnDanhSach_Click(object? sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
             try
@@ -70,6 +85,21 @@ namespace QLSinhVien.WinForms.Forms
             finally
             {
                 Cursor = Cursors.Default;
+            }
+        }
+
+        // ─── NÚT THOÁT ỨNG DỤNG (guna2Button3) ───────────────────────────────────
+        private void BtnExit_Click(object? sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                "Bạn có chắc chắn muốn thoát chương trình?",
+                "Xác nhận thoát",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                Application.Exit();
             }
         }
 
@@ -355,14 +385,26 @@ namespace QLSinhVien.WinForms.Forms
             dgv.Columns[^1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             dgv.CellFormatting += Dgv_CellFormatting;
+            dgv.CellDoubleClick += async (sender, e) =>
+            {
+                if (e.RowIndex >= 0 && dgv.Rows[e.RowIndex].DataBoundItem is StudentRankDto topSv)
+                {
+                    var sv = await _svRepo.FindByMasvExactAsync(topSv.Masv);
+                    if (sv != null)
+                    {
+                        using var frm = new FormThongTinSV(sv);
+                        frm.ShowDialog(this);
+                    }
+                }
+            };
         }
 
-        private void Dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void Dgv_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
-            var dgv = (DataGridView)sender;
-            if (dgv.Columns[e.ColumnIndex].DataPropertyName == "XepLoai" && e.Value != null)
+            var dgv = sender as DataGridView;
+            if (dgv != null && dgv.Columns[e.ColumnIndex].DataPropertyName == "XepLoai" && e.Value != null)
             {
-                string xepLoai = e.Value.ToString()!;
+                string xepLoai = e.Value.ToString() ?? "";
                 e.CellStyle.ForeColor = xepLoai switch
                 {
                     "Xuất sắc" => Color.FromArgb(0, 140, 60),

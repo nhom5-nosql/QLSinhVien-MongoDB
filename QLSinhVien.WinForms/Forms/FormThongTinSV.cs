@@ -246,7 +246,7 @@ namespace QLSinhVien.WinForms.Forms
 
             dgv.CellFormatting += (_, e) =>
             {
-                if (e.ColumnIndex == 2 && e.Value is double d)
+                if (e.CellStyle != null && e.ColumnIndex == 2 && e.Value is double d)
                 {
                     e.CellStyle.Font     = new Font("Segoe UI", 9f, FontStyle.Bold);
                     e.CellStyle.ForeColor= d >= 8.5 ? Color.FromArgb(0, 140, 60)

@@ -17,7 +17,6 @@ namespace QLSinhVien.WinForms.Repositories
             _collection = database.GetCollection<SinhVien>("sinhvien");
         }
 
-        // Constructor phụ phòng trường hợp Duy gọi không tham số (fallback về Singleton)
         public SinhVienRepository() 
             : this(Data.MongoDBConnection.Instance.Database)
         {
@@ -55,6 +54,20 @@ namespace QLSinhVien.WinForms.Repositories
             await _collection.UpdateOneAsync(sv => sv.Masv == masv, updateDef);
         }
 
+        // Update toàn bộ thông tin sinh viên (bao gồm mảng Môn học và Ngoại ngữ)
+        public async Task UpdateFullAsync(string masv, SinhVien updated)
+        {
+            var updateDef = Builders<SinhVien>.Update
+                .Set(sv => sv.Hoten, updated.Hoten)
+                .Set(sv => sv.Tuoi, updated.Tuoi)
+                .Set(sv => sv.Phai, updated.Phai)
+                .Set(sv => sv.Malop, updated.Malop)
+                .Set(sv => sv.Ngoaingu, updated.Ngoaingu)
+                .Set(sv => sv.Monhoc, updated.Monhoc);
+
+            await _collection.UpdateOneAsync(sv => sv.Masv == masv, updateDef);
+        }
+
         // 6. Delete: Xóa 1 sinh viên theo Mã SV
         public async Task DeleteAsync(string masv) =>
             await _collection.DeleteOneAsync(Builders<SinhVien>.Filter.Eq(sv => sv.Masv, masv));
@@ -65,7 +78,7 @@ namespace QLSinhVien.WinForms.Repositories
 
 
         // ==========================================
-        // II. PHẦN C: TÌM KIẾM NÂNG CAO & REGEX (SANG)
+        // II. PHẦN C: TÌM KIẾM NÂNG CAO & REGEX
         // ==========================================
 
         // 1. Lấy toàn bộ danh sách (phiên bản alias)
