@@ -117,5 +117,109 @@ namespace QLSinhVien.WinForms.Repositories
             }
             return await query.ToListAsync();
         }
+
+        // ==========================================
+        // III. GỢI Ý (SUGGESTIONS) CHO NGOẠI NGỮ & MÔN HỌC
+        // ==========================================
+
+        // Lấy tất cả ngoại ngữ duy nhất đã tồn tại trong CSDL
+        public async Task<List<string>> GetAllDistinctLanguagesAsync()
+        {
+            var distinct = await _collection.DistinctAsync<string>("ngoaingu", new BsonDocument());
+            var list = await distinct.ToListAsync();
+            return list.FindAll(s => !string.IsNullOrWhiteSpace(s))
+                       .Distinct(System.StringComparer.OrdinalIgnoreCase)
+                       .OrderBy(s => s)
+                       .ToList();
+        }
+
+        // Lấy tất cả môn học (Mã môn, Tên môn) duy nhất đã tồn tại trong CSDL qua Aggregation
+        public async Task<List<MonHoc>> GetAllDistinctSubjectsAsync()
+        {
+            var pipeline = new BsonDocument[]
+            {
+                new BsonDocument("$unwind", "$monhoc"),
+                new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", new BsonDocument
+                        {
+                            { "mamon", "$monhoc.mamon" },
+                            { "tenmon", "$monhoc.tenmon" }
+                        }
+                    }
+                }),
+                new BsonDocument("$project", new BsonDocument
+                {
+                    { "_id", 0 },
+                    { "mamon", "$_id.mamon" },
+                    { "tenmon", "$_id.tenmon" }
+                }),
+                new BsonDocument("$sort", new BsonDocument("tenmon", 1))
+            };
+
+            var docs = await _collection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+            var list = new List<MonHoc>();
+            foreach (var doc in docs)
+            {
+                string mamon = doc.Contains("mamon") && !doc["mamon"].IsBsonNull ? doc["mamon"].AsString : "";
+                string tenmon = doc.Contains("tenmon") && !doc["tenmon"].IsBsonNull ? doc["tenmon"].AsString : "";
+                if (!string.IsNullOrWhiteSpace(mamon) || !string.IsNullOrWhiteSpace(tenmon))
+                {
+                    list.Add(new MonHoc { Mamon = mamon, Tenmon = tenmon, Diem = 0 });
+                }
+            }
+            return list;
+        }
+
+        // ==========================================
+        // IV. TỰ ĐỘNG SINH MÃ SINH VIÊN (AUTO-GENERATE MASV)
+        // ==========================================
+        public async Task<string> GenerateNextMasvAsync()
+        {
+            var listMasv = await _collection.Find(_ => true)
+                                            .Project(s => s.Masv)
+                                            .ToListAsync();
+
+            int maxNumber = 0;
+            string prefix = "SV";
+            int digitCount = 3;
+
+            var regex = new Regex(@"^(?<prefix>[a-zA-Z]+)(?<num>\d+)$");
+
+            foreach (var masv in listMasv)
+            {
+                if (string.IsNullOrWhiteSpace(masv)) continue;
+
+                var match = regex.Match(masv.Trim());
+                if (match.Success)
+                {
+                    string p = match.Groups["prefix"].Value;
+                    string numStr = match.Groups["num"].Value;
+
+                    if (numStr.Length > digitCount)
+                        digitCount = numStr.Length;
+
+                    if (int.TryParse(numStr, out int num))
+                    {
+                        if (num > maxNumber)
+                        {
+                            maxNumber = num;
+                            prefix = p;
+                        }
+                    }
+                }
+            }
+
+            int nextNum = maxNumber + 1;
+            string candidate;
+            do
+            {
+                candidate = $"{prefix}{nextNum.ToString().PadLeft(digitCount, '0')}";
+                nextNum++;
+            }
+            while (listMasv.Exists(m => string.Equals(m, candidate, StringComparison.OrdinalIgnoreCase)));
+
+            return candidate;
+        }
     }
 }

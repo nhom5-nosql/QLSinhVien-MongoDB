@@ -60,12 +60,14 @@ namespace QLSinhVien.WinForms
             // 
             // txtMasv
             // 
-            txtMasv.BackColor = SystemColors.Window;
+            txtMasv.BackColor = Color.FromArgb(238, 242, 246);
             txtMasv.Location = new Point(95, 26);
             txtMasv.Name = "txtMasv";
-            txtMasv.PlaceholderText = "VD: sv001";
+            txtMasv.PlaceholderText = "(Tự động sinh)";
+            txtMasv.ReadOnly = true;
             txtMasv.Size = new Size(185, 27);
             txtMasv.TabIndex = 0;
+            txtMasv.TabStop = false;
             // 
             // lblHoten
             // 
